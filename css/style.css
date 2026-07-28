@@ -1,11 +1,23 @@
+:root {
+  --glow-warm: 148, 75, 25;
+  --glow-ember: 255, 182, 140;
+  --ring: 148, 75, 25;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: max(884px, 100dvh);
+  overflow-x: hidden;
+  transition: background-color .6s ease, color .6s ease;
 }
 
 .material-symbols-outlined {
-  font-variation-settings: 
+  font-variation-settings:
     'FILL' 0,
     'wght' 400,
     'GRAD' 0,
@@ -16,4 +28,265 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   opacity: 0.03;
   pointer-events: none;
+}
+
+#leaves-layer {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.leaf {
+  position: absolute;
+  will-change: transform, opacity;
+}
+
+.leaf svg {
+  display: block;
+  filter: drop-shadow(0 2px 3px rgba(50, 20, 0, 0.18));
+}
+
+#scenery {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Sol */
+.scenery-sun {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.scenery-sun circle,
+.scenery-sun polygon {
+  fill: rgba(var(--glow-warm), 0.16);
+}
+
+html.dark .scenery-sun circle,
+html.dark .scenery-sun polygon {
+  fill: rgba(var(--glow-ember), 0.22);
+}
+
+/* Árvores secas */
+.scenery-tree path {
+  fill: none;
+  stroke: rgba(var(--glow-warm), 0.22);
+  stroke-width: 7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.scenery-tree--far path {
+  stroke-width: 5;
+  stroke: rgba(var(--glow-warm), 0.14);
+}
+
+html.dark .scenery-tree path {
+  stroke: rgba(215, 178, 150, 0.16);
+}
+
+/*Cactos*/
+.scenery-cactus rect,
+.scenery-cactus path {
+  fill: rgba(var(--glow-warm), 0.2);
+  stroke: rgba(var(--glow-warm), 0.2);
+}
+
+html.dark .scenery-cactus rect,
+html.dark .scenery-cactus path {
+  fill: rgba(215, 178, 150, 0.14);
+  stroke: rgba(215, 178, 150, 0.14);
+}
+
+/* Chão rachado */
+.scenery-ground path {
+  fill: none;
+  stroke: rgba(var(--glow-warm), 0.15);
+  stroke-width: 3;
+}
+
+html.dark .scenery-ground path {
+  stroke: rgba(215, 178, 150, 0.1);
+}
+
+@media (max-width: 640px) {
+  #scenery {
+    opacity: 0.75;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sun-rotor {
+    animation: none;
+  }
+}
+
+[data-reveal] {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.avatar-wrap {
+  position: relative;
+}
+
+.avatar-glow {
+  position: absolute;
+  inset: -18%;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(var(--glow-ember), .55) 0%, rgba(var(--glow-warm), .25) 45%, transparent 70%);
+  filter: blur(18px);
+  animation: pulse-glow 4.5s ease-in-out infinite;
+  z-index: 0;
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: .55;
+  }
+
+  50% {
+    transform: scale(1.12);
+    opacity: .85;
+  }
+}
+
+.avatar-float {
+  animation: float-avatar 6s ease-in-out infinite;
+}
+
+@keyframes float-avatar {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.avatar-img {
+  transition: transform .5s cubic-bezier(.2, .8, .2, 1), filter .5s ease;
+}
+
+.avatar-wrap:hover .avatar-img {
+  transform: scale(1.045);
+  filter: brightness(1.05) saturate(1.08);
+}
+
+.link-btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(var(--glow-warm), 0.12);
+  box-shadow: 0 1px 2px rgba(26, 28, 25, 0.04), 0 8px 24px -12px rgba(var(--glow-warm), 0.25);
+  transition: transform .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s ease, border-color .35s ease;
+}
+
+html.dark .link-btn {
+  background: rgba(47, 49, 46, 0.5);
+  border: 1px solid rgba(var(--glow-ember), 0.14);
+}
+
+.link-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(115deg, transparent 30%, rgba(var(--glow-ember), .28) 48%, transparent 66%);
+  transform: translateX(-120%);
+  transition: transform .8s ease;
+}
+
+.link-btn:hover::before {
+  transform: translateX(120%);
+}
+
+.link-btn:hover {
+  transform: translateY(-2px) scale(1.012);
+  box-shadow: 0 2px 4px rgba(26, 28, 25, 0.06), 0 14px 32px -12px rgba(var(--glow-warm), 0.4);
+  border-color: rgba(var(--glow-warm), 0.3);
+}
+
+.link-btn:active,
+.link-btn.is-pressed {
+  transform: translateY(0px) scale(.97);
+}
+
+.link-btn .icon-wrap {
+  transition: transform .4s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+.link-btn:hover .icon-wrap {
+  transform: rotate(-6deg) scale(1.12);
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 9999px;
+  background: rgba(var(--glow-warm), .35);
+  transform: scale(0);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.release-card {
+  box-shadow: 0 1px 2px rgba(26, 28, 25, .05);
+  transition: box-shadow .4s ease, transform .4s cubic-bezier(.2, .8, .2, 1);
+}
+
+.release-card:hover {
+  box-shadow: 0 20px 45px -18px rgba(var(--glow-warm), .45);
+  transform: translateY(-4px);
+}
+
+#theme-toggle {
+  transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), background-color .3s ease;
+}
+
+#theme-toggle:hover {
+  transform: rotate(18deg);
+}
+
+/*Reduced motion — respeita preferência do usuário*/
+@media (prefers-reduced-motion: reduce) {
+
+  .avatar-glow,
+  .avatar-float,
+  #theme-toggle {
+    animation: none !important;
+  }
+
+  .link-btn,
+  .release-card,
+  .avatar-img {
+    transition: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .link-btn {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  .avatar-glow {
+    filter: blur(12px);
+  }
 }

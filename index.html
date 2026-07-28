@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html class="light" lang="pt-BR">
 
 <head>
@@ -10,11 +9,10 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@700;800&amp;display=swap"
         rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
-    
+
     <link rel="icon" type="image/png" sizes="32x32" href="image/icons/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="16x16" href="image/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="image/icons/favicon-192x192.png">
@@ -89,53 +87,127 @@
 
     <link rel="stylesheet" href="css/style.css">
 
+    <!-- GSAP + ScrollTrigger — animações de entrada, scroll reveal, folhas e sol -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <!-- Anime.js — microinterações -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.2/anime.min.js"></script>
+
     <title>Biimax - Links</title>
 </head>
 
-<body class="bg-background text-on-surface font-body">
-    <div class="fixed inset-0 asymmetric-grain z-0"></div>
+<body class="bg-background text-on-surface font-body dark:bg-[#111210] transition-colors duration-500">
+    <svg id="scenery" aria-hidden="true" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice"
+        xmlns="http://www.w3.org/2000/svg">
 
-    <nav class="bg-[#fafaf5]/80 dark:bg-stone-950/80 backdrop-blur-md fixed top-0 w-full z-50">
-        <div class="flex justify-center items-center py-4 px-6 w-full max-w-2xl mx-auto">
+        <!-- Sol -->
+        <g class="scenery-sun">
+            <g class="sun-rotor" style="transform-origin: 1420px 150px;">
+                <circle cx="1420" cy="150" r="52" />
+                <polygon points="1420,55 1397,157 1443,157" transform="rotate(0 1420 150)" />
+                <polygon points="1420,55 1397,157 1443,157" transform="rotate(45 1420 150)" />
+                <polygon points="1420,55 1397,157 1443,157" transform="rotate(90 1420 150)" />
+                <polygon points="1420,55 1397,157 1443,157" transform="rotate(135 1420 150)" />
+                <polygon points="1420,55 1397,157 1443,157" transform="rotate(180 1420 150)" />
+                <polygon points="1420,55 1397,157 1443,157" transform="rotate(225 1420 150)" />
+                <polygon points="1420,55 1397,157 1443,157" transform="rotate(270 1420 150)" />
+                <polygon points="1420,55 1397,157 1443,157" transform="rotate(315 1420 150)" />
+            </g>
+        </g>
+
+        <!-- Árvore mais distante e menor -->
+        <g class="scenery-tree scenery-tree--far">
+            <path d="M1180,900 L1172,770 M1172,820 L1140,770 M1172,780 L1210,730 M1172,770 L1178,630
+                     M1178,680 L1150,640 M1178,670 L1205,625 M1178,670 L1178,600" />
+        </g>
+
+        <!-- Árvore seca principal à esquerda -->
+        <g class="scenery-tree scenery-tree--near">
+            <path d="M260,900 L250,740 M250,800 L190,740 M250,790 L200,850 M250,740 L260,600
+                     M260,600 L210,540 M260,600 L305,530 M260,600 L262,440 M262,440 L225,395 M262,440 L300,400" />
+        </g>
+
+        <!-- Cactos -->
+        <g class="scenery-cactus">
+            <rect x="705" y="770" width="30" height="130" rx="15" />
+            <path d="M705,830 q-42,0 -42,-40 q0,-18 18,-18 q18,0 18,18 v45" fill="none" stroke-width="30"
+                stroke-linecap="round" />
+            <path d="M735,810 q40,0 40,-38 q0,-17 -17,-17 q-17,0 -17,17 v42" fill="none" stroke-width="28"
+                stroke-linecap="round" />
+        </g>
+
+        <g class="scenery-cactus scenery-cactus--sm">
+            <rect x="970" y="815" width="22" height="90" rx="11" />
+            <path d="M970,860 q-30,0 -30,-28 q0,-13 13,-13 q13,0 13,13 v32" fill="none" stroke-width="20"
+                stroke-linecap="round" />
+        </g>
+
+        <!-- Chão -->
+        <g class="scenery-ground">
+            <path d="M0,860 Q400,845 800,860 T1600,858" />
+            <path d="M120,872 L150,900 M340,868 L310,900 M600,872 L640,900 M900,868 L870,900
+                     M1180,872 L1220,900 M1460,870 L1420,900" />
+        </g>
+    </svg>
+
+    <!-- Folhas -->
+    <div id="leaves-layer" aria-hidden="true"></div>
+
+    <div class="fixed inset-0 asymmetric-grain z-[2]"></div>
+
+    <nav style="opacity:0; filter:blur(6px);"
+        class="bg-[#fafaf5]/80 dark:bg-[#111210]/80 backdrop-blur-md fixed top-0 w-full z-50 transition-colors duration-500">
+        <div class="flex justify-between items-center py-4 px-6 w-full max-w-2xl mx-auto">
+            <div class="w-9"></div>
             <h1
-                class="text-[#803d0a] dark:text-[#f4f4ef] font-['Manrope'] font-black tracking-[-0.02em] uppercase text-2xl">
+                class="text-[#803d0a] dark:text-[#ffb68c] font-['Manrope'] font-black tracking-[-0.02em] uppercase text-2xl">
                 BIIMAX</h1>
+            <button id="theme-toggle" aria-label="Alternar tema"
+                class="w-9 h-9 flex items-center justify-center rounded-full text-primary dark:text-[#ffb68c] hover:bg-primary/10 dark:hover:bg-white/10">
+                <span class="material-symbols-outlined text-xl">dark_mode</span>
+            </button>
         </div>
     </nav>
+
     <main class="relative z-10 pt-24 pb-12 px-6 max-w-2xl mx-auto flex flex-col items-center">
 
         <header class="flex flex-col items-center text-center mb-12">
-            <div class="relative group cursor-pointer mb-6">
-                <div
-                    class="absolute inset-0 bg-primary/10 rounded-full blur-xl group-hover:bg-primary/20 transition-all duration-500">
+            <div class="relative group cursor-pointer mb-6 avatar-wrap" data-reveal="avatar"
+                style="transform: translateY(16px);">
+                <div class="avatar-glow"></div>
+                <div class="avatar-float relative z-10">
+                    <img class="avatar-img w-32 h-32 rounded-full object-cover border-4 border-surface-container-lowest dark:border-[#2f312e] shadow-sm"
+                        alt="Foto de perfil de Biimax, artista musical" src="image/Biimax_icon_perfil.png" />
+                    <button aria-label="Compartilhar"
+                        class="absolute -right-2 bottom-2 bg-surface-container-lowest dark:bg-[#2f312e] p-2 rounded-full shadow-md text-primary dark:text-[#ffb68c] hover:scale-105 transition-transform">
+                        <span class="material-symbols-outlined text-lg">share</span>
+                    </button>
                 </div>
-                <img class="w-32 h-32 rounded-full object-cover border-4 border-surface-container-lowest shadow-sm relative z-10"
-                    data-alt="Professional circular headshot of a Brazilian artist Biimax with golden hour desert lighting and earth-toned rustic background"
-                    src="image/Biimax_icon_perfil.png" />
-                <button aria-label="Compartilhar"
-                    class="absolute -right-2 bottom-2 bg-surface-container-lowest p-2 rounded-full shadow-md text-primary hover:scale-105 transition-transform">
-                    <span class="material-symbols-outlined text-lg">share</span>
-                </button>
             </div>
-            <h2 class="font-headline text-4xl font-extrabold tracking-tighter text-primary uppercase mb-2">BIIMAX</h2>
-            <p class="text-on-surface-variant font-medium tracking-wide uppercase text-xs opacity-80">CONTATO OFICIAL
+            <h2 data-reveal="name" style="transform: translateY(14px);"
+                class="font-headline text-4xl font-extrabold tracking-tighter text-primary dark:text-[#ffb68c] uppercase mb-2">
+                BIIMAX</h2>
+            <p data-reveal="tag" style="transform: translateY(10px);"
+                class="text-on-surface-variant dark:text-[#cabdb4] font-medium tracking-wide uppercase text-xs opacity-80">
+                CONTATO OFICIAL
             </p>
         </header>
 
         <section class="w-full flex flex-col gap-3 mb-16">
 
-            <a class="group flex items-center justify-between w-full p-4 bg-surface-container-low hover:bg-surface-container-high transition-all duration-300 rounded-lg"
-                href="https://www.instagram.com/biimvx?igsh=MWxmb3hrMHh0bzRoaw==" target="_blank">
+            <a data-reveal="link" style="transform: translateY(14px);"
+                class="link-btn group flex items-center justify-between w-full p-4 rounded-lg"
+                href="https://www.instagram.com/biimvx?igsh=MWxmb3hrMHh0bzRoaw==" target="_blank" rel="noopener">
 
                 <div class="flex items-center gap-4">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="currentColor"
-                        viewBox="0 0 24 24">
-                        <path
-                            d="M7.75 2C4.574 2 2 4.574 2 7.75v8.5C2 19.426 4.574 22 7.75 22h8.5C19.426 22 22 19.426 22 16.25v-8.5C22 4.574 19.426 2 16.25 2h-8.5zm0 2h8.5C18.216 4 20 5.784 20 7.75v8.5c0 1.966-1.784 3.75-3.75 3.75h-8.5C5.784 20 4 18.216 4 16.25v-8.5C4 5.784 5.784 4 7.75 4zm8.75 1.5a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5zM12 7a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6z" />
-                    </svg>
-
-                    <span class="font-semibold text-on-surface">Instagram</span>
+                    <span class="icon-wrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary dark:text-[#ffb68c]"
+                            fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M7.75 2C4.574 2 2 4.574 2 7.75v8.5C2 19.426 4.574 22 7.75 22h8.5C19.426 22 22 19.426 22 16.25v-8.5C22 4.574 19.426 2 16.25 2h-8.5zm0 2h8.5C18.216 4 20 5.784 20 7.75v8.5c0 1.966-1.784 3.75-3.75 3.75h-8.5C5.784 20 4 18.216 4 16.25v-8.5C4 5.784 5.784 4 7.75 4zm8.75 1.5a1.25 1.25 0 110 2.5 1.25 1.25 0 010-2.5zM12 7a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6z" />
+                        </svg>
+                    </span>
+                    <span class="font-semibold text-on-surface dark:text-[#f1f1ec]">Instagram</span>
                 </div>
 
                 <span
@@ -144,18 +216,19 @@
                 </span>
             </a>
 
-            <a class="group flex items-center justify-between w-full p-4 bg-surface-container-low hover:bg-surface-container-high transition-all duration-300 rounded-lg"
-                href="https://www.tiktok.com/@biimax084" target="_blank">
+            <a data-reveal="link" style="transform: translateY(14px);"
+                class="link-btn group flex items-center justify-between w-full p-4 rounded-lg"
+                href="https://www.tiktok.com/@biimax084" target="_blank" rel="noopener">
 
                 <div class="flex items-center gap-4">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="currentColor"
-                        viewBox="0 0 24 24">
-                        <path
-                            d="M16.5 2c.3 1.7 1.7 3 3.5 3.2v3.1c-1.3 0-2.6-.4-3.7-1v6.6c0 3.6-2.9 6.5-6.5 6.5S3.3 17.5 3.3 14s2.9-6.5 6.5-6.5c.3 0 .6 0 .9.1v3.2c-.3-.1-.6-.2-.9-.2-1.9 0-3.4 1.5-3.4 3.4S7.9 17.4 9.8 17.4s3.4-1.5 3.4-3.4V2h3.3z" />
-                    </svg>
-
-                    <span class="font-semibold text-on-surface">TikTok</span>
+                    <span class="icon-wrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary dark:text-[#ffb68c]"
+                            fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M16.5 2c.3 1.7 1.7 3 3.5 3.2v3.1c-1.3 0-2.6-.4-3.7-1v6.6c0 3.6-2.9 6.5-6.5 6.5S3.3 17.5 3.3 14s2.9-6.5 6.5-6.5c.3 0 .6 0 .9.1v3.2c-.3-.1-.6-.2-.9-.2-1.9 0-3.4 1.5-3.4 3.4S7.9 17.4 9.8 17.4s3.4-1.5 3.4-3.4V2h3.3z" />
+                        </svg>
+                    </span>
+                    <span class="font-semibold text-on-surface dark:text-[#f1f1ec]">TikTok</span>
                 </div>
 
                 <span
@@ -165,18 +238,19 @@
             </a>
 
 
-            <a class="group flex items-center justify-between w-full p-4 bg-surface-container-low hover:bg-surface-container-high transition-all duration-300 rounded-lg"
-                href="https://youtube.com/@biimax777?si=3Nywfq52etIDvF4N" target="_blank">
+            <a data-reveal="link" style="transform: translateY(14px);"
+                class="link-btn group flex items-center justify-between w-full p-4 rounded-lg"
+                href="https://youtube.com/@biimax777?si=3Nywfq52etIDvF4N" target="_blank" rel="noopener">
 
                 <div class="flex items-center gap-4">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="currentColor"
-                        viewBox="0 0 24 24">
-                        <path
-                            d="M23.5 6.2a3 3 0 00-2.1-2.1C19.7 3.5 12 3.5 12 3.5s-7.7 0-9.4.6A3 3 0 00.5 6.2 31.6 31.6 0 000 12a31.6 31.6 0 00.5 5.8 3 3 0 002.1 2.1c1.7.6 9.4.6 9.4.6s7.7 0 9.4-.6a3 3 0 002.1-2.1A31.6 31.6 0 0024 12a31.6 31.6 0 00-.5-5.8zM9.75 15.5v-7l6 3.5-6 3.5z" />
-                    </svg>
-
-                    <span class="font-semibold text-on-surface">YouTube</span>
+                    <span class="icon-wrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary dark:text-[#ffb68c]"
+                            fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M23.5 6.2a3 3 0 00-2.1-2.1C19.7 3.5 12 3.5 12 3.5s-7.7 0-9.4.6A3 3 0 00.5 6.2 31.6 31.6 0 000 12a31.6 31.6 0 00.5 5.8 3 3 0 002.1 2.1c1.7.6 9.4.6 9.4.6s7.7 0 9.4-.6a3 3 0 002.1-2.1A31.6 31.6 0 0024 12a31.6 31.6 0 00-.5-5.8zM9.75 15.5v-7l6 3.5-6 3.5z" />
+                        </svg>
+                    </span>
+                    <span class="font-semibold text-on-surface dark:text-[#f1f1ec]">YouTube</span>
                 </div>
 
                 <span
@@ -185,19 +259,20 @@
                 </span>
             </a>
 
-            <a class="group flex items-center justify-between w-full p-4 bg-surface-container-low hover:bg-surface-container-high transition-all duration-300 rounded-lg"
+            <a data-reveal="link" style="transform: translateY(14px);"
+                class="link-btn group flex items-center justify-between w-full p-4 rounded-lg"
                 href="https://open.spotify.com/intl-pt/artist/1ngqWaopiWE8eZ0Km0zt6M?si=6im_FpUPS_a7i6cp1FCdkg"
-                target="_blank">
+                target="_blank" rel="noopener">
 
                 <div class="flex items-center gap-4">
-
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="currentColor"
-                        viewBox="0 0 24 24">
-                        <path
-                            d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.52 17.34c-.22.36-.69.47-1.05.25-2.88-1.76-6.5-2.16-10.77-1.2-.41.09-.82-.17-.91-.58-.09-.41.17-.82.58-.91 4.65-1.04 8.65-.59 11.82 1.33.36.22.47.69.25 1.05zm1.5-3.34c-.27.44-.85.58-1.29.31-3.3-2.03-8.33-2.62-12.23-1.43-.49.15-1-.13-1.15-.62-.15-.49.13-1 .62-1.15 4.42-1.34 9.93-.69 13.79 1.62.44.27.58.85.31 1.29zm.13-3.47C15.6 8.4 9.5 8.08 6.2 9.13c-.58.18-1.19-.14-1.37-.72-.18-.58.14-1.19.72-1.37 3.77-1.17 10.5-.94 14.54 1.51.53.32.7 1 .38 1.53-.32.53-1 .7-1.53.38z" />
-                    </svg>
-
-                    <span class="font-semibold text-on-surface">Spotify</span>
+                    <span class="icon-wrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary dark:text-[#ffb68c]"
+                            fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.52 17.34c-.22.36-.69.47-1.05.25-2.88-1.76-6.5-2.16-10.77-1.2-.41.09-.82-.17-.91-.58-.09-.41.17-.82.58-.91 4.65-1.04 8.65-.59 11.82 1.33.36.22.47.69.25 1.05zm1.5-3.34c-.27.44-.85.58-1.29.31-3.3-2.03-8.33-2.62-12.23-1.43-.49.15-1-.13-1.15-.62-.15-.49.13-1 .62-1.15 4.42-1.34 9.93-.69 13.79 1.62.44.27.58.85.31 1.29zm.13-3.47C15.6 8.4 9.5 8.08 6.2 9.13c-.58.18-1.19-.14-1.37-.72-.18-.58.14-1.19.72-1.37 3.77-1.17 10.5-.94 14.54 1.51.53.32.7 1 .38 1.53-.32.53-1 .7-1.53.38z" />
+                        </svg>
+                    </span>
+                    <span class="font-semibold text-on-surface dark:text-[#f1f1ec]">Spotify</span>
                 </div>
 
                 <span
@@ -209,19 +284,20 @@
 
         <section class="w-full mb-16">
             <div class="flex items-center justify-between mb-8">
-                <h3 class="font-headline text-lg font-bold uppercase tracking-widest text-on-surface-variant">Últimos
+                <h3
+                    class="font-headline text-lg font-bold uppercase tracking-widest text-on-surface-variant dark:text-[#cabdb4]">
+                    Últimos
                     Lançamentos</h3>
                 <div class="h-px flex-grow ml-4 bg-outline-variant opacity-30"></div>
             </div>
 
             <div class="grid grid-cols-2 gap-4">
 
-                <a href="https://sndo.ffm.to/28nxwxw"
-                    target="_blank"
-                    class="col-span-2 relative overflow-hidden rounded-xl bg-surface-container group cursor-pointer h-80 block">
+                <a data-reveal="card" href="https://sndo.ffm.to/28nxwxw" target="_blank" rel="noopener"
+                    class="release-card col-span-2 relative overflow-hidden rounded-xl bg-surface-container dark:bg-[#232420] group cursor-pointer h-80 block">
 
                     <img class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                        src="image/effect_x.png" />
+                        src="image/effect_x.png" alt="Capa do álbum Effect X" loading="lazy" />
 
                     <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent"></div>
 
@@ -236,21 +312,21 @@
                         </h4>
 
                         <div
-                            class="w-full py-3 px-6 bg-surface-container-lowest text-primary font-bold rounded-full flex items-center justify-center gap-2 opacity-100 group-hover:opacity-100 transition-all duration-300 hover:bg-primary-fixed">
+                            class="link-btn w-full py-3 px-6 !bg-surface-container-lowest text-primary font-bold rounded-full flex items-center justify-center gap-2">
                             Ouça agora
                             <span class="material-symbols-outlined text-base">play_arrow</span>
                         </div>
                     </div>
                 </a>
 
-                <a href="https://sndo.ffm.to/8x6rjq8"
-                    target="_blank"
-                    class="rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group block">
+                <a data-reveal="card" href="https://sndo.ffm.to/8x6rjq8" target="_blank" rel="noopener"
+                    class="release-card rounded-xl overflow-hidden group block">
 
                     <div class="aspect-square relative overflow-hidden">
 
                         <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            src="image/vai_de_reto_satanás.png" />
+                            src="image/vai_de_reto_satanás.png" alt="Capa da faixa Vai de reto satanás"
+                            loading="lazy" />
 
                         <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent">
                         </div>
@@ -262,7 +338,7 @@
                             </h4>
 
                             <div
-                                class="w-full py-2 px-4 bg-surface-container-lowest text-primary font-bold rounded-full flex items-center justify-center hover:bg-primary-fixed transition-colors gap-2">
+                                class="link-btn w-full py-2 px-4 !bg-surface-container-lowest text-primary font-bold rounded-full flex items-center justify-center gap-2">
                                 Ouça agora
                                 <span class="material-symbols-outlined text-sm">play_arrow</span>
                             </div>
@@ -272,14 +348,14 @@
                     </div>
                 </a>
 
-                <a href="https://sndo.ffm.to/7xwypej"
-                    target="_blank"
-                    class="rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group block">
+                <a data-reveal="card" href="https://sndo.ffm.to/7xwypej" target="_blank" rel="noopener"
+                    class="release-card rounded-xl overflow-hidden group block">
 
                     <div class="aspect-square relative overflow-hidden">
 
                         <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                            src="image/eu_ja_ando_3_dias_virado.png" />
+                            src="image/eu_ja_ando_3_dias_virado.png" alt="Capa da faixa Eu já ando 3 dias virado"
+                            loading="lazy" />
 
                         <div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent">
                         </div>
@@ -291,7 +367,7 @@
                             </h4>
 
                             <div
-                                class="w-full py-2 px-4 bg-surface-container-lowest text-primary font-bold rounded-full flex items-center justify-center hover:bg-primary-fixed transition-colors gap-2">
+                                class="link-btn w-full py-2 px-4 !bg-surface-container-lowest text-primary font-bold rounded-full flex items-center justify-center gap-2">
                                 Ouça agora
                                 <span class="material-symbols-outlined text-sm">play_arrow</span>
                             </div>
@@ -305,7 +381,7 @@
         </section>
     </main>
 
-    <footer class="bg-transparent w-full py-12 flex flex-col items-center gap-4 px-8">
+    <footer class="relative z-10 bg-transparent w-full py-12 flex flex-col items-center gap-4 px-8">
         <p class="font-['Inter'] text-[10px] tracking-widest uppercase text-[#1a1c19]/40 dark:text-[#fafaf5]/40">© 2026
             BIIMAX. Todos os direitos reservados.</p>
         <div class="flex gap-4">
@@ -314,12 +390,14 @@
             <a class="text-[#1a1c19]/40 dark:text-[#fafaf5]/40 hover:text-[#803d0a] dark:hover:text-[#ffffff] transition-colors font-['Inter'] text-[10px] tracking-widest uppercase"
                 href="./termos.html">Termos</a>
         </div>
-        <p class="font-['Inter'] text-[9px] tracking-widest uppercase text-[#1a1c19]/30">Desenvolvido por: <a class="font-['Inter'] text-[9px] tracking-widest uppercase text-[#1a1c19]/30 hover:text-[#803d0a] dark:hover:text-[#ffffff] transition-colors" href="https://jrsilvadev-portfolio.vercel.app/" target="_blank">Jr. Silva Dev</a>
+        <p class="font-['Inter'] text-[10px] tracking-widest uppercase text-[#1a1c19]/40 dark:text-[#fafaf5]/40">
+            Desenvolvido por: <a
+                class="text-[#1a1c19]/40 dark:text-[#fafaf5]/40 hover:text-[#803d0a] dark:hover:text-[#ffffff] transition-colors font-['Inter'] text-[10px] tracking-widest uppercase"
+                href="https://jrsilvadev-portfolio.vercel.app/" target="_blank" rel="noopener">Jr. Silva Dev</a>
         </p>
     </footer>
 
-
-    <script src="js/scrypt.js"></script>
+    <script src="js/script.js"></script>
 </body>
 
 </html>
