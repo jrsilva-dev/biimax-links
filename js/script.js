@@ -1,25 +1,6 @@
-/* ==========================================================================
-   BIIMAX — script.js
-   1) Cenário de caatinga/agreste em SVG (sol, árvores secas, cactos, chão),
-      estático — como um desenho parado
-   2) Folhas secas voando com o vento (GSAP): voam, caem no chão, voam de
-      novo mais à frente, saem da tela e reiniciam em loop
-   3) Timeline de entrada em GSAP (foto → nome → descrição → botões)
-   4) Scroll reveal em GSAP + ScrollTrigger para os cards de lançamento
-   5) Microinterações em Anime.js (ripple, ícones, feedback de clique)
-   6) Toggle de tema claro/escuro — o sol nasce e fica no tema claro,
-      e some ao entrar no tema escuro
-   7) Botão de compartilhar (mantido / preservado)
-   ========================================================================== */
-
 const prefersReducedMotion = window.matchMedia("(prefers-reduce-motion: reduce), (prefers-reduced-motion: reduce)").matches;
 const isSmallScreen = window.matchMedia("(max-width: 640px)").matches;
 
-/* ==========================================================================
-   1) FOLHAS SECAS — voam com o vento, caem no chão, voam de novo mais à
-      frente, saem da tela e reiniciam em loop. É o único elemento do
-      background em movimento contínuo; o resto do cenário fica parado.
-   ========================================================================== */
 function initLeaves() {
   const layer = document.getElementById("leaves-layer");
   if (!layer) return;
@@ -39,7 +20,6 @@ function initLeaves() {
     layer.appendChild(leaf);
 
     if (prefersReducedMotion) {
-      // Sem movimento contínuo: a folha fica parada perto do chão
       leaf.style.left = `${12 + i * 34}%`;
       leaf.style.bottom = "9%";
       leaf.style.transform = "rotate(24deg)";
@@ -51,16 +31,11 @@ function initLeaves() {
   }
 }
 
-/**
- * Monta uma sequência de "pulos" para a folha: voa (sobe + avança + gira),
- * cai e pousa no chão, pausa, voa de novo mais à frente — repetindo até
- * sair da tela, quando reinicia do lado esquerdo, fora da viewport.
- */
 function animateLeaf(leaf, index) {
   if (typeof gsap === "undefined") return;
 
-  const groundLevel = 9;                 // % a partir da base — onde a folha "pousa"
-  const hops = 3;                        // quantos voos até sair da tela
+  const groundLevel = 9;
+  const hops = 3; 
   const startDelay = index * 3.2;
 
   gsap.set(leaf, { left: "-8%", bottom: `${groundLevel + 4}%`, rotation: 0, opacity: 0 });
